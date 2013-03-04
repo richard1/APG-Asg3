@@ -1,24 +1,23 @@
-<html>
+<html manifest="manifest.php">
 	<head>
 		<link type="text/css" rel="stylesheet" media="screen" href="jqtouch/themes/css/jqtouch.css">
+		<link type="text/css" rel="stylesheet" media="screen" href="kilo.css">
 		<script type="text/javascript" src="jqtouch/src/lib/jquery.js"></script>
 		<script type="text/javascript" src="jqtouch/src/jqtouch-jquery.js"></script>
 		<script type="text/javascript" src="jqtouch/src/jqtouch.js"></script>
+		<script type="text/javascript" src="kilo.js"></script>
 		<script type="text/javascript">
-		var jQT = $.jQTouch({
-		icon: 'kilo.png'
-		});
 		</script>
-		<title>Kilo</title>
+		<title>Study Buddy</title>
 	</head>
 	<body>
 		<div id="home">
 			<div class="toolbar">
-				<h1>Kilo</h1>
+				<h1>Study Buddy</h1>
 				<a class="button flip" href="#settings">Settings</a>
 			</div>
 			<ul class="edgetoedge">
-			<li class="arrow"><a href="#dates">Dates</a></li>
+			<li class="arrow"><a href="#tasks">Tasks</a></li>
 			<li class="arrow"><a href="#about">About</a></li>
 			</ul>
 		</div>
@@ -28,12 +27,12 @@
 				<a class="button back" href="#">Back</a>
 			</div>
 			<div>
-				<p>Kilo gives you easy access to your food diary.</p>
+				<p>A Buddy for Studying! :D</p>
 			</div>
 		</div>
-		<div id="dates">
+		<div id="tasks">
 			<div class="toolbar">
-				<h1>Dates</h1>
+				<h1>Tasks</h1>
 				<a class="button back" href="#">Back</a>
 			</div>
 			<ul class="edgetoedge">
@@ -66,9 +65,23 @@
 			</div>
 			<form method="post">
 			<ul class="rounded">
-			<li><input type="text" placeholder="Food" name="food" id="food" autocapitalize="off" autocorrect="off" autocomplete="off" /></li>
+			<li><input type="text" placeholder="Subject" name="food" id="food" autocapitalize="off" autocorrect="off" autocomplete="off" /></li>
 			<li><input type="text" placeholder="Calories" name="calories" id="calories" autocapitalize="off" autocorrect="off" autocomplete="off" /></li>
 			<li><input type="submit" class="submit" name="action" value="Save Entry" /></li>
+			</ul>
+			</form>
+		</div>
+		<div id="settings">
+			<div class="toolbar">
+				<h1>Settings</h1>
+				<a class="button cancel" href="#">Cancel</a>
+			</div>
+			<form method="post">
+			<ul class="rounded">
+			<li><input placeholder="Age" type="text" name="age" id="age" /></li>
+			<li><input placeholder="Weight" type="text" name="weight" id="weight" /></li>
+			<li><input placeholder="Budget" type="text" name="budget" id="budget" /></li>
+			<li><input type="submit" class="submit" name="action" value="Save Changes" /></li>
 			</ul>
 			</form>
 		</div>
