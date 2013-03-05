@@ -12,6 +12,7 @@ $(document).ready(function(){
 		var dayOffset = this.id;
 		var date = new Date();
 		date.setDate(date.getDate() - dayOffset);
+		alert(date.getMonth());
 		sessionStorage.currentDate = date.getMonth() + 1 + '/' + 
 			date.getDate() + '/' + 
 			date.getFullYear();
