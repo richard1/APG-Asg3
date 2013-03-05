@@ -8,7 +8,7 @@ $(document).ready(function(){
 	$('#createEntry form').submit(createEntry);
 	$('#settings form').submit(saveSettings);
 	$('#settings').bind('pageAnimationStart', loadSettings);
-	$('#dates li a').bind('click touchend', function(){
+	$('#tasks li a').bind('click touchend', function(){
 		var dayOffset = this.id;
 		var date = new Date();
 		date.setDate(date.getDate() - dayOffset);
@@ -28,7 +28,7 @@ $(document).ready(function(){
 			transaction.executeSql(
 				'CREATE TABLE IF NOT EXISTS entries ' +
 				' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
-				' date DATE NOT NULL, cls TEXT NOT NULL, ' +
+				' date DATE NOT NULL, cls TEXT NOT NULL, period INTEGER NOT NULL, asg TEXT NOT NULL,' +
 				' hours INTEGER NOT NULL );'
 			);
 		}
@@ -75,8 +75,10 @@ function refreshEntries() {
 						newEntryRow.removeAttr('style');
 						newEntryRow.data('entryId', row.id);
 						newEntryRow.appendTo('#date ul');
-						newEntryRow.find('.label').text(row.cls);
-						newEntryRow.find('.calories').text(row.hours);
+						newEntryRow.find('.label').text("Class: " + row.cls);
+						newEntryRow.find('.per').text("Period: " + row.period);
+						newEntryRow.find('.asg').text("Assignment: " + row.asg);
+						newEntryRow.find('.hours').text("Hours: " + row.hours);
 						newEntryRow.find('.delete').click(function(){
 							var clickedEntry = $(this).parent();
 							var clickedEntryId = clickedEntry.data('entryId');
@@ -95,11 +97,13 @@ function createEntry() {
 	var date = sessionStorage.currentDate;
 	var hours = $('#hours').val();
 	var cls = $('#class').val();
+	var per = $('#per').val();
+	var asg = $('#asg').val();
 	db.transaction(
 		function(transaction) {
 			transaction.executeSql(
-				'INSERT INTO entries (date, hours, cls) VALUES (?, ?, ?);', 
-				[date, hours, cls], 
+				'INSERT INTO entries (date, hours, cls, period, asg) VALUES (?, ?, ?, ?, ?);', 
+				[date, hours, cls, per, asg], 
 				function(){
 				refreshEntries();
 				jQT.goBack();
