@@ -6,6 +6,7 @@ var db;
 
 $(document).ready(function(){
 	$('#createEntry form').submit(createEntry);
+	$('#createTest form').submit(createTest);
 	$('#settings form').submit(saveSettings);
 	$('#settings').bind('pageAnimationStart', loadSettings);
 	$('#tasks li a').bind('click touchend', function(){
@@ -16,6 +17,15 @@ $(document).ready(function(){
 			date.getDate() + '/' + 
 			date.getFullYear();
 		refreshEntries();
+	});
+	$('#tests li a').bind('click touchend', function(){
+		var dayOffset = this.id;
+		var date = new Date();
+		date.setDate(date.getDate() - dayOffset);
+		sessionStorage.currentDate = date.getMonth() + 1 + '/' + 
+			date.getDate() + '/' + 
+			date.getFullYear();
+		refreshTests();
 	});
 	
 	var shortName = 'SB';
@@ -30,6 +40,11 @@ $(document).ready(function(){
 				' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
 				' date DATE NOT NULL, cls TEXT NOT NULL, period INTEGER NOT NULL, asg TEXT NOT NULL,' +
 				' hours INTEGER NOT NULL );'
+			);
+			transaction.executeSql(
+				'CREATE TABLE IF NOT EXISTS tests ' +
+				' (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+				' date DATE NOT NULL, cls TEXT NOT NULL, period INTEGER NOT NULL, topic TEXT NOT NULL );'
 			);
 		}
 	);
@@ -93,6 +108,40 @@ function refreshEntries() {
 	);
 }
 
+function refreshTests() {
+	var currentDate = sessionStorage.currentDate;
+	$('#test h1').text(currentDate);
+	$('#test ul li:gt(0)').remove();
+	db.transaction(
+		function(transaction) {
+			transaction.executeSql(
+				'SELECT * FROM tests WHERE date = ? ORDER BY cls;',
+				[currentDate], 
+				function (transaction, result) {
+					for (var i=0; i < result.rows.length; i++) {
+						var row = result.rows.item(i);
+						var newEntryRow = $('#testTemplate').clone();
+						newEntryRow.removeAttr('id');
+						newEntryRow.removeAttr('style');
+						newEntryRow.data('entryId', row.id);
+						newEntryRow.appendTo('#test ul');
+						newEntryRow.find('.label').text("Class: " + row.cls);
+						newEntryRow.find('.per').text("Period: " + row.period);
+						newEntryRow.find('.topic').text("Topic: " + row.topic);
+						newEntryRow.find('.delete').click(function(){
+							var clickedEntry = $(this).parent();
+							var clickedEntryId = clickedEntry.data('entryId');
+							deleteEntryById(clickedEntryId);
+							clickedEntry.slideUp();
+						});
+						}
+					}, 
+				errorHandler
+			);
+		}
+	);
+}
+
 function createEntry() {
 	var date = sessionStorage.currentDate;
 	var hours = $('#hours').val();
@@ -106,6 +155,26 @@ function createEntry() {
 				[date, hours, cls, per, asg], 
 				function(){
 				refreshEntries();
+				jQT.goBack();
+				errorHandler
+			});
+		}
+	);
+	return false;
+}
+
+function createTest() {
+	var date = sessionStorage.currentDate;
+	var cls = $('#t_class').val();
+	var per = $('#t_per').val();
+	var topic = $('#topic').val();
+	db.transaction(
+		function(transaction) {
+			transaction.executeSql(
+				'INSERT INTO tests (date, cls, period, topic) VALUES (?, ?, ?, ?);', 
+				[date, cls, per, topic], 
+				function(){
+				refreshTests();
 				jQT.goBack();
 				errorHandler
 			});
